@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -19,8 +20,8 @@ func TestMainHandlerWhenStatusOkAndBodyNotEmpty(t *testing.T) {
 	handler := http.HandlerFunc(mainHandle)
 	handler.ServeHTTP(responseRecorder, req)
 
-	assert.Equal(t, http.StatusOK, responseRecorder.Code)
-	assert.NotEmpty(t, responseRecorder.Body.String())
+	require.Equal(t, http.StatusOK, responseRecorder.Code)
+	assert.NotEmpty(t, responseRecorder.Body)
 }
 
 func TestMainHandlerWhenCityNotSupported(t *testing.T) {
@@ -45,5 +46,6 @@ func TestMainHandlerWhenCountMoreThanTotal(t *testing.T) {
 
 	cities := strings.Split(responseRecorder.Body.String(), ",")
 
+	require.Equal(t, http.StatusOK, responseRecorder.Code)
 	assert.Equal(t, cafeList[correctCity], cities)
 }
